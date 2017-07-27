@@ -28,7 +28,7 @@ endfunction
 
 ""
 " Encode a vim object as well as we can,
-" try not to fail, even if we have functions, etc.
-function! std#json# abort
+" try not to fail, even if we have functions,etc.
+function! std#json#encode(vim_obj) abort
   
 endfunction
