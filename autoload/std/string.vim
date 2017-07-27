@@ -6,3 +6,6 @@ function! std#string#upper(s) abort
   return luaeval('string.upper(_A)', a:s)
 endfunction
 
+function! std#string#contains(s, sub) abort
+  return stridx(a:s, a:sub) >= 0
+endfunction

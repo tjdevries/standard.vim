@@ -18,7 +18,7 @@ function! std#window#temp(...) abort
     call execute('set filetype=' . opts.filetype)
   endif
 
-  if get(opts, 'concealcursor', '') !=#
+  if get(opts, 'concealcursor', '') !=# ''
     call execute('setlocal concealcursor=' . opts.concealcursor)
   endif
 

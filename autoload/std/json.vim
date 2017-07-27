@@ -26,6 +26,10 @@ function! std#json#format(json_argument) abort
   return split(system(['python', '-m', 'json.tool', temp_file]), "\n")
 endfunction
 
+function! std#json#put(json_argument)
+  call nvim_buf_set_lines(0, -1, -1, v:false, std#json#format(a:json_argument))
+endfunction
+
 ""
 " Encode a vim object as well as we can,
 " try not to fail, even if we have functions,etc.
