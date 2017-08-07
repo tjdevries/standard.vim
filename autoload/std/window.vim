@@ -1,4 +1,13 @@
 ""
+" Evaluate options passed to making a new window
+" Meant to be used from an autocmd
+function! std#window#evaluate_options() abort
+  if !has_key(b:, 'std_window_opts')
+    return
+  endif
+
+endfunction
+""
 " Opens a temporary window
 function! std#window#temp(...) abort
   let opts = {}
@@ -21,6 +30,11 @@ function! std#window#temp(...) abort
   if get(opts, 'concealcursor', '') !=# ''
     call execute('setlocal concealcursor=' . opts.concealcursor)
   endif
+
+
+  let b:std_window_opts = opts
+
+  autocmd User StdBufferTempAutoCmd <buffer> call std#window#evaluate_options(b:std_window_opts)
 
   return nvim_buf_get_number(0)
 endfunction
