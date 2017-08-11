@@ -21,6 +21,8 @@ function! std#window#temp(...) abort
     new
   endif
 
+  redraw!
+
   set buftype=nofile
 
   if get(opts, 'filetype', '') !=# ''
@@ -34,7 +36,8 @@ function! std#window#temp(...) abort
 
   let b:std_window_opts = opts
 
-  autocmd User StdBufferTempAutoCmd <buffer> call std#window#evaluate_options(b:std_window_opts)
+  autocmd User StdBufferTempAutoCmd <buffer> call std#window#evaluate_options()
+  " doautocmd User StdBufferTempAutoCmd
 
   return nvim_buf_get_number(0)
 endfunction
@@ -52,7 +55,11 @@ function! std#window#view(num) abort
   let old_pos = getcurpos()
   let old_window = win_getid()
   new
-  call nvim_set_current_buf(a:num)
+  try
+    call nvim_set_current_buf(a:num)
+  catch
+    echom "Couldn't find buffer: " . a:num
+  endtry
   call win_gotoid(old_window)
   call setpos('.', old_pos)
 endfunction
