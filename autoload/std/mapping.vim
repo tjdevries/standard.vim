@@ -27,12 +27,44 @@ endfunction
 ""
 " Uses a maparg-like dictinoary to generate a mapping
 function! std#mapping#map_dict(map_dict) abort
-  call execute(std#mapping#map_dict_to_string(a:map_dict))
+  return execute(std#mapping#map_dict_to_string(a:map_dict))
+endfunction
+
+function! std#mapping#unmap_dict(unmap_dict) abort
+  return execute(std#mapping#unmap_dict_to_string(a:unmap_dict))
 endfunction
 
 ""
 " Turns a maparg-like dictionary into an executable string
 function! std#mapping#map_dict_to_string(map_dict)
+  let modifiers = std#mapping#get_modifiers(a:map_dict)
+
+  let noremap = ''
+  if get(a:map_dict, 'noremap', v:false)
+    let noremap = 'nore'
+  endif
+
+  let mode = std#mapping#get_mode(a:map_dict)
+
+  let lhs = a:map_dict.lhs
+  let rhs = a:map_dict.rhs
+
+  return std#string#interpolate('{mode}{noremap}map {modifiers} {lhs} {rhs}', l:)
+endfunction
+
+""
+" Unamp a dictionary string
+function! std#mapping#unmap_dict_to_string(unmap_dict) abort
+  let mode = std#mapping#get_mode(a:unmap_dict)
+  let modifiers = std#mapping#get_modifiers(a:unmap_dict)
+  let lhs = a:unmap_dict.lhs
+
+  return std#string#interpolate('{mode}unmap {modifiers} {lhs}', l:)
+endfunction
+
+""
+" Get the modifiers of a mapping dictionar
+function! std#mapping#get_modifiers(map_dict) abort
   let modifiers = ''
 
   if get(a:map_dict, 'expr', v:false)
@@ -47,18 +79,20 @@ function! std#mapping#map_dict_to_string(map_dict)
     let modifiers .= '<silent>'
   endif
 
-  let noremap = ''
-  if get(a:map_dict, 'noremap', v:false)
-    let noremap = 'nore'
+  if get(a:map_dict, 'buffer', v:false)
+    let modifiers .= '<buffer>'
   endif
 
+  return modifiers
+endfunction
+
+""
+" Get the mode of a mapping dictionary
+function! std#mapping#get_mode(map_dict) abort
   let mode = 'n'
   if get(a:map_dict, 'mode', '') != ''
     let mode = a:map_dict.mode
   endif
 
-  let lhs = a:map_dict.lhs
-  let rhs = a:map_dict.rhs
-
-  return std#string#interpolate('{mode}{noremap}map {modifiers} {lhs} {rhs}', l:)
+  return mode
 endfunction
