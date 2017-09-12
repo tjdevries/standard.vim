@@ -1,0 +1,76 @@
+Execute (Parse String):
+  let semver = std#semver#parse('3.2.5')
+  AssertEqual semver.major, 3
+  AssertEqual semver.minor, 2
+  AssertEqual semver.patch, 5
+
+Execute (Parse List):
+  let semver = std#semver#parse([5, 2])
+  AssertEqual semver.major, 5
+  AssertEqual semver.minor, 2
+  AssertEqual semver.patch, 0
+
+Execute (Parse Dict):
+  let semver = std#semver#parse({'minor': 3})
+  AssertEqual semver.major, 0
+  AssertEqual semver.minor, 3
+  AssertEqual semver.patch, 0
+
+Execute (Check Equal):
+  let s1 = std#semver#parse([3, 8, 1])
+  let s2 = std#semver#parse([3, 8, 1])
+  let s3 = std#semver#parse([5, 8, 1])
+  Assert std#semver#is(s1, '==', s2)
+  Assert std#semver#is(s2, '==', s1)
+  Assert !std#semver#is(s1, '==', s3)
+  Assert std#semver#is(s1, '!=', s3)
+
+Execute (Check Greater):
+  " Check major
+  let s1 = std#semver#parse([4, 8])
+  let s2 = std#semver#parse([3, 7, 1])
+  Assert std#semver#is(s1, '>', s2), 32
+  Assert std#semver#is(s1, '>=', s2), 33
+
+  " Check minor
+  let s1 = std#semver#parse([3, 8, 1])
+  let s2 = std#semver#parse([3, 7, 2])
+  Assert std#semver#is(s1, '>', s2), 38
+  Assert std#semver#is(s1, '>=', s2), 39
+
+  " Check patch
+  let s1 = std#semver#parse([3, 7, 3])
+  let s2 = std#semver#parse([3, 7, 2])
+  Assert std#semver#is(s1, '>', s2), 44
+  Assert std#semver#is(s1, '>=', s2), 45
+
+  let s1 = std#semver#parse([3, 7, 3])
+  let s2 = std#semver#parse([3, 7])
+  Assert std#semver#is(s1, '>', s2), 49
+  Assert std#semver#is(s1, '>=', s2), 50
+  Assert std#semver#is(s1, '>=', s1), 51
+
+Execute (Check Less):
+  " Check major
+  let s1 = std#semver#parse([3, 7, 1])
+  let s2 = std#semver#parse([4, 8])
+  Assert std#semver#is(s2, '>', s1)
+  Assert std#semver#is(s1, '<', s2)
+  Assert std#semver#is(s1, '<=', s2)
+
+  " Check minor
+  let s2 = std#semver#parse([3, 8, 1])
+  let s1 = std#semver#parse([3, 7, 2])
+  Assert std#semver#is(s1, '<', s2)
+  Assert std#semver#is(s1, '<=', s2)
+
+  " Check patch
+  let s2 = std#semver#parse([3, 7, 3])
+  let s1 = std#semver#parse([3, 7, 2])
+  Assert std#semver#is(s1, '<', s2)
+  Assert std#semver#is(s1, '<=', s2)
+
+  let s2 = std#semver#parse([3, 7, 3])
+  let s1 = std#semver#parse([3, 7])
+  Assert std#semver#is(s1, '<', s2)
+  Assert std#semver#is(s1, '<=', s2)
