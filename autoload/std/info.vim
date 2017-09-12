@@ -1,6 +1,9 @@
 ""
 " Information regarding standard.vim
 " You can use this to make sure you have the correct version
+if !exists('g:standard_vim_semver_list')
+  runtime! plugin/std.vim
+endif
 
 ""
 " Get the semver version
