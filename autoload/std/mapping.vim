@@ -26,13 +26,7 @@ endfunction
 
 function! std#mapping#execute_dict(map_dict) abort
   if a:map_dict.expr
-    " Try and handle lambda functions easily
-    if match(a:map_dict.rhs, '^\s*{') == 0
-      call execute('let result = ' . a:map_dict.rhs)
-      return result
-    endif
-
-    return execute('call ' . a:map_dict.rhs)
+    return eval(a:map_dict.rhs)
   endif
 
   return nvim_replace_termcodes(a:map_dict.rhs, v:true, v:false, v:true)
