@@ -4,9 +4,17 @@
 " This lets you add buffer overrides for things, but still send the original
 " global one if you want!
 function! std#mapping#execute_global(mode, mapping) abort
+  " I don't think this is possible to do in vim,
+  " since you can't get the global map if there is a buffer map
+  if !has('nvim')
+    return ''
+  endif
+
   let map_list = nvim_get_keymap(a:mode)
   call filter(map_list, { idx, val -> val.lhs == a:mapping})
 
+  " If there were no mappings, or somehow more than one,
+  " just return execute the string like we would have otherwise
   if len(map_list) != 1
     return nvim_replace_termcodes(a:mapping, v:true, v:false, v:true)
   endif
@@ -16,12 +24,18 @@ function! std#mapping#execute_global(mode, mapping) abort
   return std#mapping#execute_dict(map_dict)
 endfunction
 
-function! std#mapping#execute_dict(dict) abort
-  if map_dict.expr
-    return execute(map_dict.rhs)
+function! std#mapping#execute_dict(map_dict) abort
+  if a:map_dict.expr
+    " Try and handle lambda functions easily
+    if match(a:map_dict.rhs, '^\s*{') == 0
+      call execute('let result = ' . a:map_dict.rhs)
+      return result
+    endif
+
+    return execute('call ' . a:map_dict.rhs)
   endif
 
-  return nvim_replace_termcodes(map_dict.rhs, v:true, v:false, v:true)
+  return nvim_replace_termcodes(a:map_dict.rhs, v:true, v:false, v:true)
 endfunction
 
 ""
