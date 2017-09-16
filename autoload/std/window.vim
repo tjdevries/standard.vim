@@ -36,7 +36,12 @@ function! std#window#temp(...) abort
 
   let b:std_window_opts = opts
 
-  autocmd User StdBufferTempAutoCmd <buffer> call std#window#evaluate_options()
+  if v:false
+    augroup StdBuffer
+      autocmd!
+      autocmd User StdBufferTempAutoCmd <buffer> call std#window#evaluate_options()
+    augroup END
+  endif
   " doautocmd User StdBufferTempAutoCmd
 
   return nvim_buf_get_number(0)
