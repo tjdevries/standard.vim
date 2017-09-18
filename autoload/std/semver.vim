@@ -152,3 +152,13 @@ function! std#semver#is(left, comparison, right) abort
 
   return is_valid
 endfunction
+
+""
+" Take a semver object and turn it into a string
+function! std#semver#string(semver) abort
+  return printf('%s.%s.%s',
+        \ get(a:semver, 'major', 0),
+        \ get(a:semver, 'minor', 0),
+        \ get(a:semver, 'patch', 0)
+        \ )
+endfunction
