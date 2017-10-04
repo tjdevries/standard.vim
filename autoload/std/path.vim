@@ -1,7 +1,7 @@
 ""
 " Path separator
 function! std#path#separator() abort
-  if !has('unix')
+  if std#os#has_windows()
     return '\'
   else
     return '/'
