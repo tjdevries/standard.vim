@@ -6,7 +6,7 @@
 function! std#mapping#execute_global(mode, mapping) abort
   " I don't think this is possible to do in vim,
   " since you can't get the global map if there is a buffer map
-  if !has('nvim') || !exists('nvim_get_keymap')
+  if !has('nvim') || !exists('*nvim_get_keymap')
     return ''
   endif
 
