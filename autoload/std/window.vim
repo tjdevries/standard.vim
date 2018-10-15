@@ -68,3 +68,20 @@ function! std#window#view(num) abort
   call win_gotoid(old_window)
   call setpos('.', old_pos)
 endfunction
+
+""
+" Move to a visible buffer
+function! std#window#goto(buf_id) abort
+  call std#window#view(a:buf_id)
+  call win_gotoid(bufwinid(a:buf_id))
+endfunction
+
+""
+" Move Cursor To Bottom
+function! std#window#set_cursor_bottom(win_id) abort
+  if a:win_id < 0
+    return
+  endif
+
+  call nvim_win_set_cursor(a:win_id, [nvim_buf_line_count(nvim_win_get_buf(a:win_id)), 1])
+endfunction
